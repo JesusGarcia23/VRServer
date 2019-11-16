@@ -152,7 +152,12 @@ postroutes.get('/createNewPost', (req, res, next) => {
    const postId = req.params.id
    console.log(postId)
    Post.findByIdAndDelete(postId)
-   .then(postToDelete => console.log(postToDelete))
+   .then(postToDelete => {
+     Notifications.deleteMany({'imageTo': postId})
+     .then(theNotification => {
+       console.log(theNotification)
+     }).catch(err => console.log(err))
+   })
    .catch(err => console.log(err))
  })
 
