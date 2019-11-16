@@ -155,7 +155,6 @@ postroutes.get('/createNewPost', (req, res, next) => {
    .then(postToDelete => {
      Notifications.deleteMany({'imageTo': postId})
      .then(theNotification => {
-       console.log(theNotification)
      }).catch(err => console.log(err))
    })
    .catch(err => console.log(err))
