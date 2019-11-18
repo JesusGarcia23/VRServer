@@ -10,6 +10,8 @@ const hbs          = require('hbs');
 const logger       = require('morgan');
 const path         = require('path');
 
+const dotenv = require('dotenv').config();
+
 //enables databse connection
 require('./configs/database/db.setup')
 
