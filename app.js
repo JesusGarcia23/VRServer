@@ -58,7 +58,7 @@ app.locals.title = 'Express - Generated with IronGenerator';
 app.use(cors({
   // this could be multiple domains/origins, but we will allow just our React app
   credentials: true,
-  origin: ["https://trishare.herokuapp.com"]
+  origin: [process.env.LOCALHOST]
 }));
 
 
