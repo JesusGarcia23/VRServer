@@ -148,21 +148,24 @@ router.post('/follow/:id', (req, res, next) => {
     imageTo: null,
     seen: false
    })
-
+//OLD WAY .populate('followers following', 'username imageUrl followers following')
+//theUsers.findIndex(theUser => theUser.id === userId)
+//theUsers.findIndex(theUser => theUser.id === userToFollowId)
   User.find({_id: {$in: idArray}})
   .then(theUsers =>{
     let userFollower = theUsers[theUsers.findIndex(theUser => theUser.id === userId)]
     let userToFollow = theUsers[theUsers.findIndex(theUser => theUser.id === userToFollowId)]
-
+    console.log(userFollower)
     if(userToFollow.followers.indexOf(userId) >= 0){
       const userIndex = userToFollow.followers.indexOf(userId)
       const userToUnfollowIndex = userFollower.following.indexOf(userToFollowId)
       userFollower.following.splice(userToUnfollowIndex, 1)
       userToFollow.followers.splice(userIndex, 1)
     }else{
-
-    userFollower.following.push({_id: userToFollow._id, username: userToFollow.username, imageUrl: userToFollow.imageUrl})
-    userToFollow.followers.push({_id: userFollower._id, username: userFollower.username, imageUrl: userFollower.imageUrl})
+//OLD WAY {_id: userToFollow._id, username: userToFollow.username, imageUrl: userToFollow.imageUrl}
+// {_id: userFollower._id, username: userFollower.username, imageUrl: userFollower.imageUrl}
+    userFollower.following.push(userToFollow._id)
+    userToFollow.followers.push(userFollower._id)
     notification.save()
   }
 
