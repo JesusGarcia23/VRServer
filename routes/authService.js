@@ -117,7 +117,7 @@ router.post('/auth/login', (req, res, next) => {
 router.get('/auth/loggedin', (req, res, next) => {
   if (req.user) {
     req.user.encryptedPassword = undefined;
-
+    res.io.sockets.emit('change_data')
     res.status(200).json({ userDoc: req.user })
   } else {
     res.status(401).json({ userDoc: null })
