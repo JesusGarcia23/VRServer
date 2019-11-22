@@ -416,14 +416,14 @@ io.on('connection', socket => {
   })
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 app.use((req, res, next) => {
   res.io = io
   next()
 })
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/client/build/index.html'));
-});
 
 const index = require('./routes/index');
 app.use('/', index);
