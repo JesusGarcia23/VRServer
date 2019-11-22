@@ -59,7 +59,7 @@ app.locals.title = 'Express - Generated with IronGenerator';
 app.use(cors({
   // this could be multiple domains/origins, but we will allow just our React app
   credentials: true,
-  origin: [process.env.LOCALHOST]
+  origin: [process.env.HEROKU]
 }));
 
 
