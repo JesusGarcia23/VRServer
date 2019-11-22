@@ -422,10 +422,10 @@ app.use((req, res, next) => {
 })
 
 
-app.use((req, res, next) => {
-  // If no routes match, send them the React HTML.
-  res.sendFile(__dirname + "/public/index.html");
-});
+// app.use((req, res, next) => {
+//   // If no routes match, send them the React HTML.
+//   res.sendFile(__dirname + "/public/index.html");
+// });
 
 const index = require('./routes/index');
 app.use('/', index);
