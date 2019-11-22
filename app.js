@@ -93,7 +93,15 @@ io.on('connection', socket => {
         io.sockets.emit('get_users', users)
       })
 
-
+      app.get('/auth/loggedin', (req, res, next) => {
+        if (req.user) {
+          req.user.encryptedPassword = undefined;
+          res.status(200).json({ userDoc: req.user })
+          io.sockets.emit('change_data')
+        } else {
+          res.status(401).json({ userDoc: null })
+        }
+      })
 
     //  FINDS ALL THE NOTIFICATIONS
     try {
