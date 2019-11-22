@@ -7,4 +7,4 @@ mongoose.connect('mongodb://localhost/file-upload-example-server', {useUnifiedTo
   })
   .catch(err => {
     console.error('Error connecting to mongo', err)
-  });
+  }); 
