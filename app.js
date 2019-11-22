@@ -421,12 +421,6 @@ app.use((req, res, next) => {
   next()
 })
 
-
-app.use((req, res, next) => {
-  // If no routes match, send them the React HTML.
-  res.sendFile(__dirname + "/index.html");
-});
-
 const index = require('./routes/index');
 app.use('/', index);
 
@@ -440,3 +434,9 @@ app.use('/api', require('./routes/file-upload-routes'));
 
 
 module.exports = { app: app, server: server }
+
+// app.use((req, res, next) => {
+//   // If no routes match, send them the React HTML.
+//   res.sendFile(__dirname + "/index.html");
+// });
+
