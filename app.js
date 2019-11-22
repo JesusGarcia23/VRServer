@@ -97,7 +97,7 @@ io.on('connection', socket => {
         if (req.user) {
           req.user.encryptedPassword = null;
           res.status(200).json({ userDoc: req.user })
-          io.sockets.emit('change_data', {Hello: "world"})
+          io.sockets.emit('loggedin', {Hello: "world"})
         } else {
           res.status(401).json({ userDoc: null })
         }
