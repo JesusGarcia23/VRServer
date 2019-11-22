@@ -404,6 +404,19 @@ io.on('connection', socket => {
   })
 });
 
+//FOUND IE
+if (process.env.NODE_ENV === 'production') {
+  // Exprees will serve up production assets
+  app.use(express.static('client/build'));
+
+  // Express serve up index.html file if it doesn't recognize route
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+// END OF FOUND IE
+
 app.use((req, res, next) => {
   res.io = io
   next()
@@ -419,7 +432,6 @@ app.use('/', authRoutes);
 // app.use('/', require('./routes/post-routes'));
 app.use('/api', require('./routes/thing-routes'));
 app.use('/api', require('./routes/file-upload-routes'));
-
 
 module.exports = { app: app, server: server }
 
