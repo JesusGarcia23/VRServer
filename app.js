@@ -417,6 +417,11 @@ io.on('connection', socket => {
 });
 
 app.use((req, res, next) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "index.html");
+});
+
+app.use((req, res, next) => {
   res.io = io
   next()
 })
@@ -435,8 +440,5 @@ app.use('/api', require('./routes/file-upload-routes'));
 
 module.exports = { app: app, server: server }
 
-// app.use((req, res, next) => {
-//   // If no routes match, send them the React HTML.
-//   res.sendFile(__dirname + "/index.html");
-// });
+
 
