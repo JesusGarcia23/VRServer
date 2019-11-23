@@ -15,14 +15,14 @@ const uploader = require('../configs/cloudinary-setup');
 
 
 //GET ALL NOTIFICATIONS FROM DB
-router.get('/getNotifications/:id', (req, res, next) => {
-  console.log(req.params.id)
-  const { id } = req.params
-  Notifications.find({ toWho: id }).populate('fromWho', '_id username imageUrl').populate('toWho', '_id username imageUrl').populate('imageTo')
-    .then(theNotifications => {
-      res.status(200).json(theNotifications)
-    }).catch(err => console.log(err))
-})
+// router.get('/getNotifications/:id', (req, res, next) => {
+//   console.log(req.params.id)
+//   const { id } = req.params
+//   Notifications.find({ toWho: id }).populate('fromWho', '_id username imageUrl').populate('toWho', '_id username imageUrl').populate('imageTo')
+//     .then(theNotifications => {
+//       res.status(200).json(theNotifications)
+//     }).catch(err => console.log(err))
+// })
 
 //GET ALL USERS FROM DB
 // router.get('/users', (req, res ,next) => {
@@ -105,7 +105,6 @@ router.post('/auth/login', (req, res, next) => {
         res.status(500).json({ message: 'Something went wrong with getting user object from DB' })
         return;
       }
-
       userDoc.encryptedPassword = undefined;
       res.status(200).json({ userDoc })
     })
@@ -114,15 +113,17 @@ router.post('/auth/login', (req, res, next) => {
 //END OF LOGIN ROUTE
 
 //LOGGED IN CHECK ROUTE
-router.get('/auth/loggedin', (req, res, next) => {
-  if (req.user) {
-    req.user.encryptedPassword = undefined;
-    res.io.sockets.emit('loggedin', { userDoc: req.user })
-    res.status(200).json({ userDoc: req.user })
-  } else {
-    res.status(401).json({ userDoc: null })
-  }
-})
+// router.get('/auth/loggedin', (req, res, next) => {
+//   console.log("THIS IS THE SESSION")
+//   console.log(req.session)
+//   if (req.user) {
+//     req.user.encryptedPassword = undefined;
+//     res.io.sockets.emit('loggedin', { userDoc: req.user })
+//     res.status(200).json({ userDoc: req.user })
+//   } else {
+//     res.status(401).json({ userDoc: null })
+//   }
+// })
 //END OF LOGGED IN CHECK ROUTE
 
 //LOGOUT ROUTE

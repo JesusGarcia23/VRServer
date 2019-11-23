@@ -38,9 +38,7 @@ app.use(cookieParser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
-
 
 //SESSION
 app.use(session({
@@ -48,6 +46,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true // don't save any sessions that doesn't have any data in them
 }));
+
 
 require('./configs/passport/passport.setup')(app);
 
@@ -65,11 +64,16 @@ app.use(cors({
 
 
 var connectedUsers = {}
+let myUser = {}
 
 io.on('connection', socket => {
   const { user } = socket.handshake.query;
   connectedUsers[user] = socket.id;
-
+  clients.push(connectedUsers)
+  console.log('these are the clients', clients)
+  console.log('these are the conected users', connectedUsers)
+  console.log("the connected User of users is ", connectedUsers[user])
+ 
 
   // THESE EMIT GETS ALL THE POSTS FROM THE DB
   socket.on('initial_data', () => {
@@ -91,17 +95,23 @@ io.on('connection', socket => {
     User.find().select('username imageUrl followers following bio')
       .then(users => {
         io.sockets.emit('get_users', users)
-      })
+      }).catch(err => console.log(err))
+
+
 
       app.get('/auth/loggedin', (req, res, next) => {
         if (req.user) {
-          req.user.encryptedPassword = null;
+        
+          // req.user.encryptedPassword = undefined;
           res.status(200).json({ userDoc: req.user })
-          io.sockets.emit('loggedin', {Hello: "world"})
+        
+          io.sockets.emit('change_data')
         } else {
           res.status(401).json({ userDoc: null })
         }
       })
+      //END OF LOGGED IN CHECK ROUTE
+
 
     //  FINDS ALL THE NOTIFICATIONS
     try {
@@ -302,15 +312,7 @@ io.on('connection', socket => {
 
 
 
-
-
-
-
-
-
-
-
-    // THSE IS THE ROUTE FOR THE COMMENTS
+    // THis IS THE ROUTE FOR THE COMMENTS
     app.put('/addComment/:id', (req, res, next) => {
       console.log(req.params.id)
       console.log(req.body)
@@ -348,6 +350,8 @@ io.on('connection', socket => {
         throw err
       }
     })
+
+
 
     // THESE IS THE LIKES ROUTE,
     app.post('/updateLikes/:id', (req, res, _) => {
@@ -408,9 +412,16 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
-    console.log('a user disconnected')
     io.sockets.emit('change_data')
+
+    clients.splice(clients.indexOf(connectedUsers[user], 1))
+    console.log(clients)
+
+
+
+    console.log('a user disconnected', connectedUsers)
   })
+  
 });
 
 app.get('/*', function(req, res) {
@@ -422,7 +433,8 @@ app.get('/*', function(req, res) {
 })
 
 app.use((req, res, next) => {
-  res.io = io
+  req.io = io
+  req.connectedUsers = connectedUsers
   next()
 })
 
