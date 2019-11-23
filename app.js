@@ -64,7 +64,7 @@ app.use(cors({
 
 
 var connectedUsers = {}
-let myUser = {}
+let clients = []
 
 io.on('connection', socket => {
   const { user } = socket.handshake.query;
