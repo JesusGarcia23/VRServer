@@ -62,6 +62,8 @@ app.use(cors({
   origin: [process.env.HEROKU]
 }));
 
+const authRoutes = require('./routes/authService');
+app.use('/', authRoutes);
 
 var connectedUsers = {}
 let clients = []
@@ -96,22 +98,6 @@ io.on('connection', socket => {
       .then(users => {
         io.sockets.emit('get_users', users)
       }).catch(err => console.log(err))
-
-
-
-      app.get('/auth/loggedin', (req, res, next) => {
-        if (req.user) {
-        
-          // req.user.encryptedPassword = undefined;
-          res.status(200).json({ userDoc: req.user })
-        
-          io.sockets.emit('change_data')
-        } else {
-          res.status(401).json({ userDoc: null })
-        }
-      })
-      //END OF LOGGED IN CHECK ROUTE
-
 
     //  FINDS ALL THE NOTIFICATIONS
     try {
@@ -189,7 +175,6 @@ io.on('connection', socket => {
     //DELETE POST ROUTE
     app.post('/delete/:id', (req, res, next) => {
       const postId = req.params.id
-      console.log(postId)
       Post.findByIdAndDelete(postId)
         .then(postToDelete => {
           Notifications.deleteMany({ 'imageTo': postId })
@@ -203,7 +188,6 @@ io.on('connection', socket => {
 
 
     app.post('/createNewPost', uploader.single("imageUrl"), (req, res, next) => {
-      // console.log(req.body)
       const { caption, imagePost, tags } = req.body
       let tagsArray = []
       let finalArray = []
@@ -275,11 +259,8 @@ io.on('connection', socket => {
     // UPDATE USER PROFILE!
 
     app.put('/auth/updateUser/:id', uploader.single("imageUrl"), async (req, res, next) => {
-      console.log(req.params.id)
       const { id } = req.params
-      console.log(req.body)
       let { bio, imageFile, currentUser } = req.body
-      console.log(typeof imageFile)
       if (typeof imageFile !== 'string') {
         imageFile = currentUser.imageUrl
       }
@@ -314,8 +295,6 @@ io.on('connection', socket => {
 
     // THis IS THE ROUTE FOR THE COMMENTS
     app.put('/addComment/:id', (req, res, next) => {
-      console.log(req.params.id)
-      console.log(req.body)
       const { id } = req.params
       const { message, owner } = req.body
 
@@ -356,7 +335,6 @@ io.on('connection', socket => {
     // THESE IS THE LIKES ROUTE,
     app.post('/updateLikes/:id', (req, res, _) => {
       // EMITS CHANGE DATA -> SO ALL USERS CAN GET LIKES
-
       if (req.body._id === undefined) {
         res.json({ message: "WRONG!" })
       } else {
@@ -440,9 +418,6 @@ app.use((req, res, next) => {
 
 const index = require('./routes/index');
 app.use('/', index);
-
-const authRoutes = require('./routes/authService');
-app.use('/', authRoutes);
 
 // include your new routes here:
 // app.use('/', require('./routes/post-routes'));

@@ -8,8 +8,6 @@ const bcrypt = require('bcryptjs');
 
 const passport = require('passport');
 
-const Notifications = require('../models/Notification')
-
 // include CLOUDINARY:
 const uploader = require('../configs/cloudinary-setup');
 
@@ -113,17 +111,15 @@ router.post('/auth/login', (req, res, next) => {
 //END OF LOGIN ROUTE
 
 //LOGGED IN CHECK ROUTE
-// router.get('/auth/loggedin', (req, res, next) => {
-//   console.log("THIS IS THE SESSION")
-//   console.log(req.session)
-//   if (req.user) {
-//     req.user.encryptedPassword = undefined;
-//     res.io.sockets.emit('loggedin', { userDoc: req.user })
-//     res.status(200).json({ userDoc: req.user })
-//   } else {
-//     res.status(401).json({ userDoc: null })
-//   }
-// })
+router.get('/auth/loggedin', (req, res, next) => {
+  if (req.user) {
+    req.user.encryptedPassword = undefined;
+    // res.io.sockets.emit('loggedin', { userDoc: req.user })
+    res.status(200).json({ userDoc: req.user })
+  } else {
+    res.status(401).json({ userDoc: null })
+  }
+})
 //END OF LOGGED IN CHECK ROUTE
 
 //LOGOUT ROUTE
@@ -195,42 +191,40 @@ router.delete('/auth/logout', (req, res, next) => {
 // })
 
 //UPDATE USER PROFILE
-router.put('/auth/updateUser/:id', uploader.single("imageUrl"), async (req, res, next) => {
-  console.log(req.params.id)
-  const { id } = req.params
-  console.log(req.body)
-  let { bio, imageFile, currentUser } = req.body
-  console.log(typeof imageFile)
-  // if(!id){
-  //   res.json({success: false ,message: "cannot find user to edit"})
-  // }else{
+// router.put('/auth/updateUser/:id', uploader.single("imageUrl"), async (req, res, next) => {
+//   const { id } = req.params
+//   let { bio, imageFile, currentUser } = req.body
+//   console.log(typeof imageFile)
+//   // if(!id){
+//   //   res.json({success: false ,message: "cannot find user to edit"})
+//   // }else{
 
-  if (typeof imageFile !== 'string') {
-    imageFile = currentUser.imageUrl
-  }
+//   if (typeof imageFile !== 'string') {
+//     imageFile = currentUser.imageUrl
+//   }
 
-  try {
-    await User.findOneAndUpdate({ _id: id }, {
-      bio: bio,
-      imageUrl: imageFile
-    })
-      .then(user => {
-        console.log(user)
-        res.json({
-          bio: user.bio,
-          imageUrl: user.imageUrl
-        })
-      })
-      .catch(err => {
-        if (err) {
-          res.json(err)
-        }
-      })
-  } catch (err) {
-    console.log(err)
-  }
-  //}
-})
+//   try {
+//     await User.findOneAndUpdate({ _id: id }, {
+//       bio: bio,
+//       imageUrl: imageFile
+//     })
+//       .then(user => {
+//         console.log(user)
+//         res.json({
+//           bio: user.bio,
+//           imageUrl: user.imageUrl
+//         })
+//       })
+//       .catch(err => {
+//         if (err) {
+//           res.json(err)
+//         }
+//       })
+//   } catch (err) {
+//     console.log(err)
+//   }
+//   //}
+// })
 
 
 module.exports = router;
